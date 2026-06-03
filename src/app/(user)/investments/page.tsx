@@ -26,7 +26,9 @@ const TABS = [
   { label: "뉴스레터", value: "뉴스레터" },
 ] as const;
 
-const FILTERABLE = new Set(TABS.map((t) => t.value).filter(Boolean));
+const FILTERABLE: ReadonlySet<string> = new Set(
+  TABS.map((t) => t.value).filter(Boolean),
+);
 
 type SearchParams = Promise<{ category?: string }>;
 
