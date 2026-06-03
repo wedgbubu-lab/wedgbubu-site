@@ -104,11 +104,7 @@ export default async function InvestmentsPage({
                 href={`/investments/${post.id}`}
                 className="block transition-colors hover:bg-muted/30"
               >
-                <Card
-                  style={
-                    accent ? { borderColor: accent.hex, borderWidth: 2 } : undefined
-                  }
-                >
+                <Card className="border border-zinc-200 dark:border-zinc-800">
                   <CardHeader>
                     <div className="flex items-center justify-between gap-3">
                       <CardTitle className="text-xl">{post.title}</CardTitle>
