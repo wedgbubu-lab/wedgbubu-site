@@ -1,9 +1,19 @@
+import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 
 export default function LandingPage() {
   return (
     <main className="mx-auto flex min-h-dvh max-w-3xl flex-col items-center justify-center gap-8 px-6 py-16 text-center">
+      <Image
+        src="/main_photo.jpg"
+        alt="웨지부부"
+        width={1024}
+        height={1024}
+        priority
+        sizes="(max-width: 640px) 224px, 288px"
+        className="h-56 w-56 rounded-2xl object-cover shadow-lg sm:h-72 sm:w-72"
+      />
       <div className="space-y-4">
         <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
           웨지부부
