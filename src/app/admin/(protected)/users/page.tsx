@@ -25,13 +25,15 @@ export default async function AdminUsersPage({
 
   let query = supabase
     .from("profiles")
-    .select("id, email, full_name, role, created_at")
+    .select("id, email, full_name, phone, role, created_at")
     .order("created_at", { ascending: false })
     .limit(200);
 
   if (term) {
     const pat = `%${term}%`;
-    query = query.or(`email.ilike.${pat},full_name.ilike.${pat}`);
+    query = query.or(
+      `email.ilike.${pat},full_name.ilike.${pat},phone.ilike.${pat}`,
+    );
   }
 
   const { data: rows } = await query;
@@ -49,7 +51,7 @@ export default async function AdminUsersPage({
           <Input
             name="q"
             defaultValue={q}
-            placeholder="이메일 / 이름 검색"
+            placeholder="이메일 / 이름 / 연락처 검색"
             className="w-64"
           />
           <Button type="submit" variant="outline">
@@ -64,6 +66,7 @@ export default async function AdminUsersPage({
             <tr>
               <th className="px-3 py-2">이메일</th>
               <th className="px-3 py-2">이름</th>
+              <th className="px-3 py-2">연락처</th>
               <th className="px-3 py-2">role</th>
               <th className="px-3 py-2">가입일</th>
               <th className="px-3 py-2"></th>
@@ -74,6 +77,9 @@ export default async function AdminUsersPage({
               <tr key={u.id} className="border-t">
                 <td className="px-3 py-2">{u.email}</td>
                 <td className="px-3 py-2">{u.full_name ?? "—"}</td>
+                <td className="px-3 py-2 font-mono text-xs">
+                  {u.phone ?? "—"}
+                </td>
                 <td className="px-3 py-2">
                   <span
                     className={
@@ -108,7 +114,7 @@ export default async function AdminUsersPage({
             ))}
             {(rows ?? []).length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-3 py-6 text-center text-muted-foreground">
+                <td colSpan={6} className="px-3 py-6 text-center text-muted-foreground">
                   결과 없음
                 </td>
               </tr>
