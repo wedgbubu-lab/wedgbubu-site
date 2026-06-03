@@ -19,26 +19,29 @@ export default function LandingPage() {
         className="h-56 w-56 rounded-2xl object-cover shadow-lg sm:h-72 sm:w-72"
       />
       <div className="space-y-4">
-        <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
+        <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
           웨지부부
         </p>
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
           웨지부부 구독방
         </h1>
-        <div className="mx-auto max-w-xl space-y-1 text-sm leading-snug text-muted-foreground">
+        <div className="mx-auto max-w-xl space-y-1 text-sm leading-snug tracking-tight text-muted-foreground">
           <p>매일 검증된 부수입 정보와 뉴스레터를 제공합니다.</p>
           <p>구독방 신청하신 분들만 자료 열람 가능합니다.</p>
         </div>
       </div>
       <div className="flex flex-col gap-3 sm:flex-row">
-        <Link href="/login" className={buttonVariants({ size: "lg" })}>
+        <Link
+          href="/login"
+          className={cn(buttonVariants({ size: "lg" }), "tracking-tight")}
+        >
           로그인 / 가입
         </Link>
         <Link
           href="/investments"
           className={cn(
             buttonVariants({ size: "lg", variant: "outline" }),
-            "border-zinc-300 dark:border-zinc-700",
+            "border-zinc-300 tracking-tight dark:border-zinc-700",
           )}
         >
           구독방 정보 바로가기
