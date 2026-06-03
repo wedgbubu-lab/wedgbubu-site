@@ -19,7 +19,7 @@ export default function LandingPage() {
           웨지부부
         </p>
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          부수입을 위한 투자정보
+          웨지부부 구독방 정보
         </h1>
         <p className="mx-auto max-w-xl text-base text-muted-foreground">
           매달 큐레이션된 투자·재테크 인사이트를 구독자에게만 전달합니다.
@@ -34,7 +34,7 @@ export default function LandingPage() {
           href="/investments"
           className={buttonVariants({ size: "lg", variant: "outline" })}
         >
-          투자정보 바로가기
+          구독방 정보 바로가기
         </Link>
       </div>
     </main>

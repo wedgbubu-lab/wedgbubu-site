@@ -77,7 +77,7 @@ export default async function InvestmentsPage({
     <main className="mx-auto w-full max-w-6xl px-6 py-12">
       <HomeLink className="mb-4" />
       <header className="mb-6 space-y-2">
-        <h1 className="text-3xl font-bold">투자정보</h1>
+        <h1 className="text-3xl font-bold">웨지부부 구독방 정보</h1>
         <p className="text-sm text-muted-foreground">
           {isAdmin
             ? `어드민 — 미발행 포함 · 총 ${list.length}건`
@@ -199,7 +199,7 @@ function EmptyState({
         <p className="text-sm text-muted-foreground">
           {isAdmin
             ? "어드민 콘솔에서 새 글을 작성하세요."
-            : "투자정보는 활성 구독자에게만 공개됩니다. 운영자에게 문의하세요."}
+            : "웨지부부 구독방 정보는 활성 구독자에게만 공개됩니다. 운영자에게 문의하세요."}
         </p>
       </div>
       <Link href="/" className={buttonVariants({ variant: "outline", size: "sm" })}>
