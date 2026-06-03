@@ -2,6 +2,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { sanitizePostHtml } from "@/lib/posts/sanitize";
+import { HomeLink } from "@/components/home-link";
 
 function formatDate(iso: string | null) {
   if (!iso) return "";
@@ -70,12 +71,15 @@ export default async function InvestmentDetailPage({
 
   return (
     <main className="mx-auto w-full max-w-4xl px-6 py-12">
-      <Link
-        href="/investments"
-        className="text-sm text-muted-foreground hover:text-foreground"
-      >
-        ← 목록
-      </Link>
+      <div className="flex items-center gap-4">
+        <HomeLink />
+        <Link
+          href="/investments"
+          className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          ← 목록
+        </Link>
+      </div>
 
       <header className="mt-6 space-y-3 border-b pb-6">
         <div className="flex items-center gap-2 text-xs">

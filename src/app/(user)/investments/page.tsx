@@ -10,6 +10,7 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { stripHtmlForPreview } from "@/lib/posts/sanitize";
 import { cn } from "@/lib/utils";
+import { HomeLink } from "@/components/home-link";
 
 function formatDate(iso: string | null) {
   if (!iso) return "";
@@ -74,6 +75,7 @@ export default async function InvestmentsPage({
 
   return (
     <main className="mx-auto w-full max-w-6xl px-6 py-12">
+      <HomeLink className="mb-4" />
       <header className="mb-6 space-y-2">
         <h1 className="text-3xl font-bold">투자정보</h1>
         <p className="text-sm text-muted-foreground">

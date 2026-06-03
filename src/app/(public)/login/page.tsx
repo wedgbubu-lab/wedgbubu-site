@@ -8,6 +8,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { HomeLink } from "@/components/home-link";
 import { signIn, signUp } from "./actions";
 
 type SearchParams = Promise<{ error?: string; signup?: string }>;
@@ -21,6 +22,7 @@ export default async function LoginPage({
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-6 px-6 py-16">
+      <HomeLink className="-mt-8 self-start" />
       {error ? (
         <div className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
           {error}
