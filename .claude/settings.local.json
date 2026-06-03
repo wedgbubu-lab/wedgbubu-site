@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --src-dir --app --import-alias \"@/*\" --use-npm --yes)",
+      "Bash(mv CLAUDE.md /tmp/CLAUDE.md.bak)",
+      "Bash(mv temp.md /tmp/temp.md.bak)",
+      "Bash(mv /tmp/CLAUDE.md.bak CLAUDE.md)",
+      "Bash(mv /tmp/temp.md.bak temp.md)",
+      "Bash(npx --yes shadcn@latest init --defaults --yes --base-color slate)",
+      "Bash(npx --yes shadcn@latest init --help)",
+      "Bash(npx --yes shadcn@latest init --defaults --yes)",
+      "Bash(rm src/app/page.tsx)",
+      "Bash(mkdir -p \"src/app/\\(public\\)/login\" \"src/app/\\(user\\)/investments\" \"src/app/admin/login\" \"src/app/admin/users\" \"src/app/admin/subscriptions\" \"src/app/admin/posts\" \"src/app/api\" \"src/lib/supabase\" \"src/lib/import\" \"src/types\" \"supabase/migrations\")",
+      "Bash(npm run *)",
+      "Bash(grep -q \"Ready in\\\\|✓ Ready\\\\|Local:\\\\|started server\" \"C:\\\\\\\\Users\\\\\\\\rudtj\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\C--Users-rudtj-admin-claude-temp\\\\\\\\807537ac-a1ee-4470-95b1-791fa9c90f6c\\\\\\\\tasks\\\\\\\\bjy3abv05.output\")",
+      "Bash(curl -sS -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(curl -sS -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/login)",
+      "Bash(npm install *)",
+      "Bash(npx --yes shadcn@latest add input label card --yes)",
+      "Bash(npm ls *)",
+      "Bash(npm audit *)",
+      "Bash(npm test *)",
+      "Bash(grep -q \"Ready in\\\\|Local:\" \"C:\\\\\\\\Users\\\\\\\\rudtj\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\C--Users-rudtj-admin-claude-temp\\\\\\\\807537ac-a1ee-4470-95b1-791fa9c90f6c\\\\\\\\tasks\\\\\\\\b4iwp13tm.output\")",
+      "Bash(curl -sS -o /tmp/resp.html -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/)",
+      "Read(//tmp/**)",
+      "Bash(curl -sS -o /tmp/login.html -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/login)",
+      "Bash(grep -E \"Error|error|warning\" \"C:\\\\\\\\Users\\\\\\\\rudtj\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\C--Users-rudtj-admin-claude-temp\\\\\\\\807537ac-a1ee-4470-95b1-791fa9c90f6c\\\\\\\\tasks\\\\\\\\b4iwp13tm.output\")",
+      "Bash(curl -sS -o /tmp/adminlogin.html -w \"HTTP %{http_code}\\\\n\" -L http://localhost:3000/admin/login)",
+      "Bash(tail -30 \"C:\\\\\\\\Users\\\\\\\\rudtj\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\C--Users-rudtj-admin-claude-temp\\\\\\\\807537ac-a1ee-4470-95b1-791fa9c90f6c\\\\\\\\tasks\\\\\\\\b4iwp13tm.output\")",
+      "PowerShell(npm install *)",
+      "PowerShell(npm ls *)",
+      "PowerShell(npm run *)",
+      "PowerShell(try { $r = Invoke-WebRequest http://localhost:3000/investments -UseBasicParsing -TimeoutSec 10; \"all HTTP $\\($r.StatusCode\\), body $\\($r.Content.Length\\) bytes\" } catch { \"ERR: $\\($_.Exception.Message\\)\" }; try { $r = Invoke-WebRequest \"http://localhost:3000/investments?category=%EB%B6%80%EC%88%98%EC%9E%85%EC%A0%95%EB%B3%B4\" -UseBasicParsing -TimeoutSec 10; \"category=부수입정보 HTTP $\\($r.StatusCode\\), body $\\($r.Content.Length\\) bytes\" } catch { \"ERR: $\\($_.Exception.Message\\)\" }; try { $r = Invoke-WebRequest \"http://localhost:3000/investments?category=%EB%89%B4%EC%8A%A4%EB%A0%88%ED%84%B0\" -UseBasicParsing -TimeoutSec 10; \"category=뉴스레터 HTTP $\\($r.StatusCode\\), body $\\($r.Content.Length\\) bytes\" } catch { \"ERR: $\\($_.Exception.Message\\)\" })",
+      "Bash(git init *)",
+      "Bash(git add *)"
+    ]
+  }
+}
