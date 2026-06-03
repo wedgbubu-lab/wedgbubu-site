@@ -113,7 +113,7 @@ export default async function InvestmentsPage({
                       <div className="flex items-center gap-2 text-xs">
                         {post.category ? (
                           <span
-                            className="rounded px-2 py-0.5 font-medium"
+                            className="rounded-md px-2.5 py-1 text-sm font-semibold"
                             style={
                               accent
                                 ? {
