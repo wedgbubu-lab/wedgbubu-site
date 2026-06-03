@@ -47,7 +47,16 @@ export function AddPanel({ defaultYear }: { defaultYear: number }) {
                 placeholder="010-1234-5678"
               />
             </div>
-            <div className="space-y-2 sm:col-span-2">
+            <div className="space-y-2 sm:col-span-4">
+              <Label htmlFor="add-email">이메일</Label>
+              <Input
+                id="add-email"
+                name="email"
+                type="email"
+                placeholder="name@example.com"
+              />
+            </div>
+            <div className="space-y-2 sm:col-span-6">
               <Label htmlFor="add-year">연도 *</Label>
               <Input
                 id="add-year"
@@ -59,7 +68,7 @@ export function AddPanel({ defaultYear }: { defaultYear: number }) {
                 required
               />
             </div>
-            <div className="space-y-2 sm:col-span-2">
+            <div className="space-y-2 sm:col-span-6">
               <Label htmlFor="add-status">상태 *</Label>
               <select
                 id="add-status"

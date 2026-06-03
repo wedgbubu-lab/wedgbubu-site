@@ -240,6 +240,7 @@ export async function addSubscription(
 ): Promise<AddSubState> {
   const name = String(formData.get("name") ?? "").trim() || null;
   const phone = normalizePhone(String(formData.get("phone") ?? "").trim());
+  const email = String(formData.get("email") ?? "").trim() || null;
   const year = Number(formData.get("year"));
   const statusRaw = String(formData.get("status") ?? "");
   const months = formData
@@ -266,7 +267,7 @@ export async function addSubscription(
       {
         name: name ?? phone,
         phone,
-        email: null,
+        email,
         raw: { source: "manual", added_at: new Date().toISOString() },
       },
     ],
