@@ -107,7 +107,9 @@ export default async function InvestmentsPage({
                 <Card className="border border-zinc-200 dark:border-zinc-800">
                   <CardHeader>
                     <div className="flex items-center justify-between gap-3">
-                      <CardTitle className="text-xl">{post.title}</CardTitle>
+                      <CardTitle className="text-xl tracking-tight">
+                        {post.title}
+                      </CardTitle>
                       <div className="flex items-center gap-2 text-xs">
                         {post.category ? (
                           <span
