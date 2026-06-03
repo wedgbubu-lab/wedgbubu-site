@@ -2,6 +2,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { sanitizePostHtml } from "@/lib/posts/sanitize";
+import { getCategoryAccent } from "@/lib/posts/category-color";
 import { HomeLink } from "@/components/home-link";
 
 function formatDate(iso: string | null) {
@@ -84,7 +85,13 @@ export default async function InvestmentDetailPage({
       <header className="mt-6 space-y-3 border-b pb-6">
         <div className="flex items-center gap-2 text-xs">
           {post.category ? (
-            <span className="rounded bg-muted px-2 py-0.5 text-muted-foreground">
+            <span
+              className="rounded px-2 py-0.5 font-medium text-zinc-900"
+              style={(() => {
+                const a = getCategoryAccent(post.category);
+                return a ? { backgroundColor: a.hex } : undefined;
+              })()}
+            >
               {post.category}
             </span>
           ) : null}

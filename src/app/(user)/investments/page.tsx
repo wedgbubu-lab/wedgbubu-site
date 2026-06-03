@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { stripHtmlForPreview } from "@/lib/posts/sanitize";
+import { getCategoryAccent } from "@/lib/posts/category-color";
 import { cn } from "@/lib/utils";
 import { HomeLink } from "@/components/home-link";
 
@@ -95,19 +96,32 @@ export default async function InvestmentsPage({
         />
       ) : (
         <ul className="space-y-4">
-          {list.map((post) => (
+          {list.map((post) => {
+            const accent = getCategoryAccent(post.category);
+            return (
             <li key={post.id}>
               <Link
                 href={`/investments/${post.id}`}
                 className="block transition-colors hover:bg-muted/30"
               >
-                <Card>
+                <Card
+                  style={
+                    accent ? { borderColor: accent.hex, borderWidth: 2 } : undefined
+                  }
+                >
                   <CardHeader>
                     <div className="flex items-center justify-between gap-3">
                       <CardTitle className="text-xl">{post.title}</CardTitle>
                       <div className="flex items-center gap-2 text-xs">
                         {post.category ? (
-                          <span className="rounded bg-muted px-2 py-0.5 text-muted-foreground">
+                          <span
+                            className="rounded px-2 py-0.5 font-medium text-zinc-900"
+                            style={
+                              accent
+                                ? { backgroundColor: accent.hex }
+                                : undefined
+                            }
+                          >
                             {post.category}
                           </span>
                         ) : null}
@@ -130,7 +144,8 @@ export default async function InvestmentsPage({
                 </Card>
               </Link>
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
     </main>
