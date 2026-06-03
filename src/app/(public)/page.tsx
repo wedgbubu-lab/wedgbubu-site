@@ -25,7 +25,7 @@ export default function LandingPage() {
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
           웨지부부 구독방
         </h1>
-        <div className="mx-auto max-w-xl space-y-1 text-base leading-snug text-muted-foreground">
+        <div className="mx-auto max-w-xl space-y-1 text-sm leading-snug text-muted-foreground">
           <p>매일 검증된 부수입 정보와 뉴스레터를 제공합니다.</p>
           <p>구독방 신청하신 분들만 자료 열람 가능합니다.</p>
         </div>
