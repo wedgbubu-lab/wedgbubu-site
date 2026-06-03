@@ -3,7 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { parseRoster, type ParseResult } from "@/lib/import/parseRoster";
-import type { CommitState, PreviewState, PreviewTotals } from "./types";
+import type {
+  AddSubState,
+  CommitState,
+  PreviewState,
+  PreviewTotals,
+} from "./types";
 
 const VALID_STATUSES = ["active", "challenge", "expired"] as const;
 type Status = (typeof VALID_STATUSES)[number];
@@ -220,5 +225,67 @@ export async function commitImport(
       updated: result.updated ?? 0,
       skipped: result.skipped ?? 0,
     },
+  };
+}
+
+// --- 단건 구독 추가 ---------------------------------------------------------
+
+function normalizePhone(s: string) {
+  return s.replace(/[-\s]/g, "");
+}
+
+export async function addSubscription(
+  _prev: AddSubState,
+  formData: FormData,
+): Promise<AddSubState> {
+  const name = String(formData.get("name") ?? "").trim() || null;
+  const phone = normalizePhone(String(formData.get("phone") ?? "").trim());
+  const year = Number(formData.get("year"));
+  const statusRaw = String(formData.get("status") ?? "");
+  const months = formData
+    .getAll("months")
+    .map((v) => Number(v))
+    .filter((m) => Number.isInteger(m) && m >= 1 && m <= 12);
+
+  if (!phone) return { error: "연락처는 필수입니다." };
+  if (months.length === 0) return { error: "월을 하나 이상 선택하세요." };
+  if (!(VALID_STATUSES as readonly string[]).includes(statusRaw)) {
+    return { error: "상태가 올바르지 않습니다." };
+  }
+  if (!Number.isInteger(year) || year < 2000 || year > 2100) {
+    return { error: "연도가 올바르지 않습니다." };
+  }
+
+  const supabase = await createClient();
+
+  // commit_import RPC를 그대로 재사용해 roster↔profiles 자동 매칭 + 감사로그까지.
+  const { error } = await supabase.rpc("commit_import", {
+    p_source: "manual",
+    p_file_name: "manual-add",
+    p_roster: [
+      {
+        name: name ?? phone,
+        phone,
+        email: null,
+        raw: { source: "manual", added_at: new Date().toISOString() },
+      },
+    ],
+    p_subscriptions: months.map((month) => ({
+      phone,
+      year,
+      month,
+      status: statusRaw,
+    })),
+    p_warnings: [],
+  });
+
+  if (error) return { error: `추가 실패: ${error.message}` };
+
+  revalidatePath("/admin/subscriptions");
+
+  return {
+    ok: true,
+    phone,
+    addedMonths: [...months].sort((a, b) => a - b),
   };
 }

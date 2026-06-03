@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { setStatus } from "./actions";
 import { UploadPanel } from "./upload-panel";
+import { AddPanel } from "./add-panel";
 
 type SearchParams = Promise<{ q?: string }>;
 
@@ -53,6 +54,7 @@ export default async function AdminSubscriptionsPage({
 
   return (
     <div className="mx-auto max-w-6xl space-y-8 px-6 py-8">
+      <AddPanel defaultYear={year} />
       <UploadPanel defaultYear={year} />
 
       <div className="flex items-end justify-between gap-4">

@@ -28,3 +28,12 @@ export type CommitState =
   | null
   | { error: string }
   | { ok: true; counts: { inserted: number; updated: number; skipped: number } };
+
+export type AddSubState =
+  | null
+  | { error: string }
+  | {
+      ok: true;
+      phone: string;
+      addedMonths: number[];
+    };
