@@ -38,13 +38,20 @@ export async function signUp(formData: FormData) {
 
   const supabase = await createClient();
   // phone은 raw_user_meta_data에 들어가 handle_new_user 트리거가 명부 매칭에 사용.
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: phone ? { data: { phone } } : undefined,
   });
   if (error) withError(error.message);
 
+  revalidatePath("/", "layout");
+
+  // 이메일 확인이 꺼져 있으면 응답에 세션이 포함되어 즉시 로그인 상태가 된다.
+  // 켜져 있으면 session=null → 메일함 안내 페이지로.
+  if (data.session) {
+    redirect("/investments");
+  }
   redirect("/login?signup=ok");
 }
 
