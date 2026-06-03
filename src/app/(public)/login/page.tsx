@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -64,6 +65,14 @@ export default async function LoginPage({
             <Button type="submit" className="w-full">
               로그인
             </Button>
+            <div className="text-center text-sm">
+              <Link
+                href="/forgot-password"
+                className="text-muted-foreground transition-colors hover:text-foreground"
+              >
+                비밀번호를 잊으셨나요?
+              </Link>
+            </div>
           </form>
         </CardContent>
       </Card>

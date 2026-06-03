@@ -1,10 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import { SiteHeader } from "@/components/site-header";
 
 export default function LandingPage() {
   return (
-    <main className="mx-auto flex min-h-dvh max-w-3xl flex-col items-center justify-center gap-8 px-6 py-16 text-center">
+    <div className="flex min-h-dvh flex-col">
+      <SiteHeader />
+      <main className="mx-auto flex flex-1 max-w-3xl flex-col items-center justify-center gap-8 px-6 py-16 text-center">
       <Image
         src="/main_photo.jpg"
         alt="웨지부부"
@@ -38,5 +41,6 @@ export default function LandingPage() {
         </Link>
       </div>
     </main>
+    </div>
   );
 }
