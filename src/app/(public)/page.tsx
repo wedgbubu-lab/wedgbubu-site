@@ -38,7 +38,7 @@ export default function LandingPage() {
           href="/investments"
           className={cn(
             buttonVariants({ size: "lg", variant: "outline" }),
-            "border-foreground/40",
+            "border-zinc-300 dark:border-zinc-700",
           )}
         >
           구독방 정보 바로가기
