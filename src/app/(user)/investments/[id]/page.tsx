@@ -86,10 +86,12 @@ export default async function InvestmentDetailPage({
         <div className="flex items-center gap-2 text-xs">
           {post.category ? (
             <span
-              className="rounded px-2 py-0.5 font-medium text-zinc-900"
+              className="rounded px-2 py-0.5 font-medium"
               style={(() => {
                 const a = getCategoryAccent(post.category);
-                return a ? { backgroundColor: a.hex } : undefined;
+                return a
+                  ? { backgroundColor: a.bg, color: a.text }
+                  : undefined;
               })()}
             >
               {post.category}
