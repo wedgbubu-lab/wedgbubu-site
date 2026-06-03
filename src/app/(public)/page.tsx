@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { SiteHeader } from "@/components/site-header";
+import { cn } from "@/lib/utils";
 
 export default function LandingPage() {
   return (
@@ -35,7 +36,10 @@ export default function LandingPage() {
         </Link>
         <Link
           href="/investments"
-          className={buttonVariants({ size: "lg", variant: "outline" })}
+          className={cn(
+            buttonVariants({ size: "lg", variant: "outline" }),
+            "border-foreground/40",
+          )}
         >
           구독방 정보 바로가기
         </Link>
