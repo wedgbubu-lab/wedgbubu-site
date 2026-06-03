@@ -21,10 +21,10 @@ export default function LandingPage() {
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
           웨지부부 구독방 정보
         </h1>
-        <p className="mx-auto max-w-xl text-base text-muted-foreground">
-          매달 큐레이션된 투자·재테크 인사이트를 구독자에게만 전달합니다.
-          명부에 등록된 구독자만 열람할 수 있습니다.
-        </p>
+        <div className="mx-auto max-w-xl space-y-3 text-base text-muted-foreground">
+          <p>매달 검증된 부수입 정보와 뉴스레터를 제공합니다.</p>
+          <p>구독방 신청하신 분들만 자료 열람 가능합니다.</p>
+        </div>
       </div>
       <div className="flex flex-col gap-3 sm:flex-row">
         <Link href="/login" className={buttonVariants({ size: "lg" })}>
