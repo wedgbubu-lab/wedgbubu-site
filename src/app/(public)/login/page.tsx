@@ -66,12 +66,14 @@ export default async function LoginPage({
               로그인
             </Button>
             <div className="text-center text-sm">
-              <Link
-                href="/forgot-password"
+              <a
+                href="http://pf.kakao.com/_VDxnAX/chat"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-muted-foreground transition-colors hover:text-foreground"
               >
                 비밀번호를 잊으셨나요?
-              </Link>
+              </a>
             </div>
           </form>
         </CardContent>
