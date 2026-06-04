@@ -2,12 +2,14 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { getCategoryAccent } from "@/lib/posts/category-color";
+import { stripHtmlForPreview } from "@/lib/posts/sanitize";
 import { cn } from "@/lib/utils";
 import { HomeLink } from "@/components/home-link";
 
@@ -59,7 +61,7 @@ export default async function InvestmentsPage({
 
   let query = supabase
     .from("posts")
-    .select("id, title, category, is_published, published_at")
+    .select("id, title, content, category, is_published, published_at")
     .order("published_at", { ascending: false, nullsFirst: false });
 
   if (!isAdmin) {
@@ -73,11 +75,11 @@ export default async function InvestmentsPage({
   const list = posts ?? [];
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 py-12">
-      <HomeLink className="mb-4" />
-      <header className="mb-6 space-y-2">
-        <h1 className="text-3xl font-bold">웨지부부 구독방 정보</h1>
-        <p className="text-sm text-muted-foreground">
+    <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
+      <HomeLink className="mb-3" />
+      <header className="mb-4 space-y-1">
+        <h1 className="text-lg font-bold sm:text-2xl">웨지부부 구독방 정보</h1>
+        <p className="text-xs text-muted-foreground">
           {isAdmin
             ? `어드민 — 미발행 포함 · 총 ${list.length}건`
             : `최근 발행순 · 총 ${list.length}건`}
@@ -93,7 +95,7 @@ export default async function InvestmentsPage({
           activeCategory={activeCategory}
         />
       ) : (
-        <ul className="space-y-4">
+        <ul className="space-y-2">
           {list.map((post) => {
             const accent = getCategoryAccent(post.category);
             return (
@@ -102,16 +104,16 @@ export default async function InvestmentsPage({
                 href={`/investments/${post.id}`}
                 className="block transition-colors hover:bg-muted/30"
               >
-                <Card className="border border-zinc-200 dark:border-zinc-800">
-                  <CardHeader>
-                    <div className="flex items-center justify-between gap-3">
+                <Card className="gap-1 border border-zinc-200 py-3 dark:border-zinc-800">
+                  <CardHeader className="px-3 sm:px-4">
+                    <div className="flex items-center justify-between gap-2">
                       <CardTitle className="text-sm font-semibold leading-tight tracking-tight sm:text-base">
                         {post.title}
                       </CardTitle>
-                      <div className="flex items-center gap-2 text-xs">
+                      <div className="flex shrink-0 items-center gap-1.5">
                         {post.category ? (
                           <span
-                            className="rounded px-1.5 py-0.5 text-[11px] font-semibold"
+                            className="rounded px-1.5 py-0.5 text-[10px] font-semibold"
                             style={
                               accent
                                 ? {
@@ -125,16 +127,21 @@ export default async function InvestmentsPage({
                           </span>
                         ) : null}
                         {isAdmin && !post.is_published ? (
-                          <span className="rounded bg-amber-500/10 px-2 py-0.5 text-amber-700 dark:text-amber-300">
+                          <span className="rounded bg-amber-500/10 px-1.5 py-0.5 text-[10px] text-amber-700 dark:text-amber-300">
                             비공개
                           </span>
                         ) : null}
                       </div>
                     </div>
-                    <CardDescription>
+                    <CardDescription className="text-[11px]">
                       {formatDate(post.published_at)}
                     </CardDescription>
                   </CardHeader>
+                  {post.content ? (
+                    <CardContent className="line-clamp-1 px-3 text-xs text-muted-foreground sm:px-4">
+                      {stripHtmlForPreview(post.content)}
+                    </CardContent>
+                  ) : null}
                 </Card>
               </Link>
             </li>
