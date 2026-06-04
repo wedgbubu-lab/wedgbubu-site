@@ -87,6 +87,15 @@ export default async function LoginPage({
         <CardContent>
           <form action={signUp} className="space-y-4">
             <div className="space-y-2">
+              <Label htmlFor="signup-name">이름</Label>
+              <Input
+                id="signup-name"
+                name="full_name"
+                autoComplete="name"
+                placeholder="홍길동"
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="signup-email">이메일</Label>
               <Input
                 id="signup-email"

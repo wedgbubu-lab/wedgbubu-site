@@ -33,15 +33,21 @@ export async function signIn(formData: FormData) {
 
 export async function signUp(formData: FormData) {
   const { email, password } = getCreds(formData);
+  const fullName = String(formData.get("full_name") ?? "").trim();
   const phone = normalizePhone(String(formData.get("phone") ?? "").trim());
   if (!email || !password) withError("이메일과 비밀번호를 입력하세요.");
 
+  // phone/full_name은 raw_user_meta_data에 들어가 handle_new_user 트리거가
+  // profiles 채우기 + 명부 매칭에 쓴다.
+  const metaData: Record<string, string> = {};
+  if (fullName) metaData.full_name = fullName;
+  if (phone) metaData.phone = phone;
+
   const supabase = await createClient();
-  // phone은 raw_user_meta_data에 들어가 handle_new_user 트리거가 명부 매칭에 사용.
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: phone ? { data: { phone } } : undefined,
+    options: Object.keys(metaData).length ? { data: metaData } : undefined,
   });
   if (error) withError(error.message);
 
