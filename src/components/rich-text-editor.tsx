@@ -47,7 +47,7 @@ export function RichTextEditor({
         HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" },
       }),
       TipImage.configure({
-        inline: false,
+        inline: true,
         HTMLAttributes: { class: "post-image" },
       }),
     ],
@@ -98,7 +98,6 @@ export function RichTextEditor({
           .chain()
           .focus()
           .setImage({ src: data.publicUrl, alt: file.name })
-          .createParagraphNear()
           .run();
       }
     } finally {

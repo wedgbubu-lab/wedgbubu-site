@@ -170,7 +170,10 @@
   @apply italic;
 }
 .post-content img {
-  @apply my-4 block max-w-full rounded-md;
+  @apply my-2 mr-2 inline-block max-w-full rounded-md align-top;
+  max-height: 16rem;
+  width: auto;
+  height: auto;
 }
 
 /* 게시물 에디터(작성) — 같은 스타일을 ProseMirror 편집 영역에도 적용. */
@@ -207,7 +210,10 @@
   @apply text-primary underline underline-offset-2;
 }
 .tiptap.ProseMirror img {
-  @apply my-3 block max-w-full rounded-md;
+  @apply my-2 mr-2 inline-block max-w-full rounded-md align-top;
+  max-height: 14rem;
+  width: auto;
+  height: auto;
 }
 .tiptap.ProseMirror img.ProseMirror-selectednode {
   @apply outline outline-2 outline-primary;
