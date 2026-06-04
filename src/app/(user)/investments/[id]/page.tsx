@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { sanitizePostHtml } from "@/lib/posts/sanitize";
@@ -45,7 +46,7 @@ export default async function InvestmentDetailPage({
     ? (
         await supabase
           .from("posts")
-          .select("id, title, content, category, is_published, published_at")
+          .select("id, title, content, category, images, is_published, published_at")
           .eq("id", id)
           .maybeSingle()
       ).data
@@ -116,6 +117,30 @@ export default async function InvestmentDetailPage({
           __html: sanitizePostHtml(post.content ?? ""),
         }}
       />
+
+      {Array.isArray(post.images) && post.images.length > 0 ? (
+        <section className="mt-10 space-y-3">
+          <h2 className="text-sm font-semibold text-muted-foreground">
+            첨부 이미지 ({post.images.length})
+          </h2>
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {(post.images as string[]).map((url, i) => (
+              <li
+                key={url + i}
+                className="relative aspect-square overflow-hidden rounded-md border bg-muted"
+              >
+                <Image
+                  src={url}
+                  alt={`첨부 이미지 ${i + 1}`}
+                  fill
+                  sizes="(max-width: 640px) 50vw, 33vw"
+                  className="object-cover"
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </main>
   );
 }
