@@ -2,13 +2,11 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
-import { stripHtmlForPreview } from "@/lib/posts/sanitize";
 import { getCategoryAccent } from "@/lib/posts/category-color";
 import { cn } from "@/lib/utils";
 import { HomeLink } from "@/components/home-link";
@@ -61,7 +59,7 @@ export default async function InvestmentsPage({
 
   let query = supabase
     .from("posts")
-    .select("id, title, content, category, is_published, published_at")
+    .select("id, title, category, is_published, published_at")
     .order("published_at", { ascending: false, nullsFirst: false });
 
   if (!isAdmin) {
@@ -107,13 +105,13 @@ export default async function InvestmentsPage({
                 <Card className="border border-zinc-200 dark:border-zinc-800">
                   <CardHeader>
                     <div className="flex items-center justify-between gap-3">
-                      <CardTitle className="text-xl tracking-tight">
+                      <CardTitle className="text-sm font-semibold leading-tight tracking-tight sm:text-base">
                         {post.title}
                       </CardTitle>
                       <div className="flex items-center gap-2 text-xs">
                         {post.category ? (
                           <span
-                            className="rounded-md px-2.5 py-1 text-sm font-semibold"
+                            className="rounded px-1.5 py-0.5 text-[11px] font-semibold"
                             style={
                               accent
                                 ? {
@@ -137,11 +135,6 @@ export default async function InvestmentsPage({
                       {formatDate(post.published_at)}
                     </CardDescription>
                   </CardHeader>
-                  {post.content ? (
-                    <CardContent className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
-                      {stripHtmlForPreview(post.content)}
-                    </CardContent>
-                  ) : null}
                 </Card>
               </Link>
             </li>
