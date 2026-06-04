@@ -175,6 +175,11 @@
   max-width: 100%;
   width: auto;
   height: auto;
+  cursor: zoom-in;
+  transition: opacity 0.15s;
+}
+.post-content img:hover {
+  opacity: 0.92;
 }
 
 /* 게시물 에디터(작성) — 같은 스타일을 ProseMirror 편집 영역에도 적용. */

@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { sanitizePostHtml } from "@/lib/posts/sanitize";
 import { getCategoryAccent } from "@/lib/posts/category-color";
 import { HomeLink } from "@/components/home-link";
+import { PostContent } from "@/components/post-content";
 
 function formatDate(iso: string | null) {
   if (!iso) return "";
@@ -109,12 +110,9 @@ export default async function InvestmentDetailPage({
         </p>
       </header>
 
-      <article
+      <PostContent
         className="post-content mt-8 text-base leading-relaxed"
-        // 저장 시에도 살균하지만, 렌더 직전에 한 번 더 (defense in depth).
-        dangerouslySetInnerHTML={{
-          __html: sanitizePostHtml(post.content ?? ""),
-        }}
+        html={sanitizePostHtml(post.content ?? "")}
       />
     </main>
   );
