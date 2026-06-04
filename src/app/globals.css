@@ -169,6 +169,9 @@
 .post-content em {
   @apply italic;
 }
+.post-content img {
+  @apply my-4 block max-w-full rounded-md;
+}
 
 /* 게시물 에디터(작성) — 같은 스타일을 ProseMirror 편집 영역에도 적용. */
 .tiptap.ProseMirror {
@@ -202,4 +205,10 @@
 }
 .tiptap.ProseMirror a {
   @apply text-primary underline underline-offset-2;
+}
+.tiptap.ProseMirror img {
+  @apply my-3 block max-w-full rounded-md;
+}
+.tiptap.ProseMirror img.ProseMirror-selectednode {
+  @apply outline outline-2 outline-primary;
 }

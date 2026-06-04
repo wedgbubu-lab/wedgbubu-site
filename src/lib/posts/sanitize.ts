@@ -17,20 +17,27 @@ const ALLOWED_TAGS = [
   "pre",
   "code",
   "a",
+  "img",
 ];
 
 const ALLOWED_ATTRS = {
   a: ["href", "rel", "target"],
+  img: ["src", "alt"],
 };
 
 const ALLOWED_SCHEMES = ["http", "https", "mailto"];
 
-/** 저장 직전 본문 HTML을 화이트리스트 기반으로 살균. 외부 링크는 강제 noopener+target. */
+// 게시물 이미지는 우리 Supabase Storage 버킷의 public URL만 허용.
+const POST_IMAGE_RE =
+  /^https:\/\/[a-z0-9-]+\.supabase\.co\/storage\/v1\/object\/public\/post-images\//i;
+
+/** 저장 직전 본문 HTML을 화이트리스트 기반으로 살균. */
 export function sanitizePostHtml(html: string): string {
   return sanitizeHtml(html, {
     allowedTags: ALLOWED_TAGS,
     allowedAttributes: ALLOWED_ATTRS,
     allowedSchemes: ALLOWED_SCHEMES,
+    allowedSchemesByTag: { img: ["https"] },
     transformTags: {
       a: (_tag, attribs) => ({
         tagName: "a",
@@ -40,6 +47,14 @@ export function sanitizePostHtml(html: string): string {
           target: "_blank",
         },
       }),
+    },
+    // img의 src가 우리 버킷 패턴이 아니면 통째로 제거.
+    exclusiveFilter: (frame) => {
+      if (frame.tag === "img") {
+        const src = frame.attribs?.src ?? "";
+        return !POST_IMAGE_RE.test(src);
+      }
+      return false;
     },
   });
 }

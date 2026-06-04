@@ -1,10 +1,27 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
+import TipImage from "@tiptap/extension-image";
+import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+
+const BUCKET = "post-images";
+
+function pickExt(file: File) {
+  const m = /\.([a-zA-Z0-9]+)$/.exec(file.name);
+  return (m?.[1] ?? "bin").toLowerCase();
+}
+
+function randomKey(file: File) {
+  const id =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : Math.random().toString(36).slice(2);
+  return `${id}.${pickExt(file)}`;
+}
 
 export function RichTextEditor({
   name,
@@ -16,6 +33,8 @@ export function RichTextEditor({
   placeholder?: string;
 }) {
   const [html, setHtml] = useState<string>(defaultValue);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const editor = useEditor({
     extensions: [
@@ -26,6 +45,10 @@ export function RichTextEditor({
         openOnClick: false,
         autolink: true,
         HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" },
+      }),
+      TipImage.configure({
+        inline: false,
+        HTMLAttributes: { class: "post-image" },
       }),
     ],
     content: defaultValue,
@@ -51,16 +74,67 @@ export function RichTextEditor({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
 
+  async function uploadAndInsert(files: FileList | null) {
+    if (!editor || !files || files.length === 0) return;
+    setUploadError(null);
+    setUploading(true);
+    const supabase = createClient();
+    try {
+      for (const file of Array.from(files)) {
+        if (!file.type.startsWith("image/")) {
+          setUploadError(`이미지가 아닌 파일은 건너뜀: ${file.name}`);
+          continue;
+        }
+        const key = randomKey(file);
+        const { error: upErr } = await supabase.storage
+          .from(BUCKET)
+          .upload(key, file, { contentType: file.type, upsert: false });
+        if (upErr) {
+          setUploadError(`${file.name}: ${upErr.message}`);
+          continue;
+        }
+        const { data } = supabase.storage.from(BUCKET).getPublicUrl(key);
+        editor
+          .chain()
+          .focus()
+          .setImage({ src: data.publicUrl, alt: file.name })
+          .createParagraphNear()
+          .run();
+      }
+    } finally {
+      setUploading(false);
+    }
+  }
+
   return (
     <div className="rounded-md border bg-background">
-      <Toolbar editor={editor} />
+      <Toolbar
+        editor={editor}
+        onPickImage={uploadAndInsert}
+        uploading={uploading}
+      />
       <EditorContent editor={editor} />
+      {uploadError ? (
+        <p className="border-t bg-destructive/5 px-3 py-2 text-xs text-destructive">
+          {uploadError}
+        </p>
+      ) : null}
       <input type="hidden" name={name} value={html} />
     </div>
   );
 }
 
-function Toolbar({ editor }: { editor: Editor | null }) {
+function Toolbar({
+  editor,
+  onPickImage,
+  uploading,
+}: {
+  editor: Editor | null;
+  onPickImage: (files: FileList | null) => void;
+  uploading: boolean;
+}) {
+  const fileRef = useRef<HTMLInputElement | null>(null);
+
   if (!editor) {
     return <div className="h-10 border-b" />;
   }
@@ -164,6 +238,23 @@ function Toolbar({ editor }: { editor: Editor | null }) {
       >
         🔗
       </ToolBtn>
+      <ToolBtn
+        onClick={() => fileRef.current?.click()}
+        title="이미지 추가 (여러 장 선택 가능)"
+      >
+        {uploading ? "…" : "🖼"}
+      </ToolBtn>
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*"
+        multiple
+        hidden
+        onChange={(e) => {
+          onPickImage(e.target.files);
+          e.target.value = "";
+        }}
+      />
 
       <Divider />
 

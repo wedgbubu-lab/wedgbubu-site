@@ -17,14 +17,12 @@ import {
 } from "./actions";
 import { POST_CATEGORIES } from "@/lib/posts/categories";
 import { RichTextEditor } from "@/components/rich-text-editor";
-import { ImageGalleryInput } from "@/components/image-gallery-input";
 
 type Post = {
   id: string;
   title: string;
   content: string | null;
   category: string | null;
-  images: string[] | null;
   is_published: boolean;
   published_at: string | null;
   created_at: string;
@@ -53,7 +51,7 @@ export default async function AdminPostsPage() {
   const supabase = await createClient();
   const { data: posts } = await supabase
     .from("posts")
-    .select("id, title, content, category, images, is_published, published_at, created_at")
+    .select("id, title, content, category, is_published, published_at, created_at")
     .order("published_at", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false });
 
@@ -104,10 +102,6 @@ export default async function AdminPostsPage() {
             <div className="space-y-2">
               <Label>본문</Label>
               <RichTextEditor name="content" />
-            </div>
-            <div className="space-y-2">
-              <Label>이미지</Label>
-              <ImageGalleryInput name="images" />
             </div>
             <Button type="submit">작성</Button>
           </form>
@@ -211,13 +205,6 @@ export default async function AdminPostsPage() {
                             <RichTextEditor
                               name="content"
                               defaultValue={p.content ?? ""}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>이미지</Label>
-                            <ImageGalleryInput
-                              name="images"
-                              defaultValue={p.images ?? []}
                             />
                           </div>
                           <Button type="submit" size="sm">
