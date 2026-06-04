@@ -36,6 +36,10 @@ export function RichTextEditor({
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
+  // editorProps.handleDrop는 useEditor에 한 번만 캡쳐되므로,
+  // 최신 콜백 참조를 ref로 들고 간다.
+  const handleDropRef = useRef<(files: FileList, pos: number) => void>(() => {});
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -58,6 +62,27 @@ export function RichTextEditor({
         class: "tiptap ProseMirror px-3 py-3",
         "data-placeholder": placeholder,
       },
+      handleDrop(view, event) {
+        const dt = (event as DragEvent).dataTransfer;
+        const files = dt?.files;
+        if (!files || files.length === 0) return false;
+        const images = Array.from(files).filter((f) =>
+          f.type.startsWith("image/"),
+        );
+        if (images.length === 0) return false;
+
+        event.preventDefault();
+        const coords = view.posAtCoords({
+          left: (event as DragEvent).clientX,
+          top: (event as DragEvent).clientY,
+        });
+        const pos = coords?.pos ?? view.state.selection.from;
+
+        const dataTransfer = new DataTransfer();
+        for (const f of images) dataTransfer.items.add(f);
+        handleDropRef.current(dataTransfer.files, pos);
+        return true;
+      },
     },
     onUpdate({ editor }) {
       setHtml(editor.isEmpty ? "" : editor.getHTML());
@@ -74,36 +99,68 @@ export function RichTextEditor({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
 
+  async function uploadOne(file: File): Promise<string | null> {
+    if (!file.type.startsWith("image/")) {
+      setUploadError(`이미지가 아닌 파일은 건너뜀: ${file.name}`);
+      return null;
+    }
+    const supabase = createClient();
+    const key = randomKey(file);
+    const { error: upErr } = await supabase.storage
+      .from(BUCKET)
+      .upload(key, file, { contentType: file.type, upsert: false });
+    if (upErr) {
+      setUploadError(`${file.name}: ${upErr.message}`);
+      return null;
+    }
+    return supabase.storage.from(BUCKET).getPublicUrl(key).data.publicUrl;
+  }
+
   async function uploadAndInsert(files: FileList | null) {
     if (!editor || !files || files.length === 0) return;
     setUploadError(null);
     setUploading(true);
-    const supabase = createClient();
     try {
       for (const file of Array.from(files)) {
-        if (!file.type.startsWith("image/")) {
-          setUploadError(`이미지가 아닌 파일은 건너뜀: ${file.name}`);
-          continue;
-        }
-        const key = randomKey(file);
-        const { error: upErr } = await supabase.storage
-          .from(BUCKET)
-          .upload(key, file, { contentType: file.type, upsert: false });
-        if (upErr) {
-          setUploadError(`${file.name}: ${upErr.message}`);
-          continue;
-        }
-        const { data } = supabase.storage.from(BUCKET).getPublicUrl(key);
+        const url = await uploadOne(file);
+        if (!url) continue;
         editor
           .chain()
           .focus()
-          .setImage({ src: data.publicUrl, alt: file.name })
+          .setImage({ src: url, alt: file.name })
           .run();
       }
     } finally {
       setUploading(false);
     }
   }
+
+  // 드롭 위치(pos)에 순차 삽입. ProseMirror 트랜잭션 직접 조작.
+  async function uploadAndInsertAt(files: FileList, startPos: number) {
+    if (!editor || files.length === 0) return;
+    setUploadError(null);
+    setUploading(true);
+    try {
+      let pos = startPos;
+      for (const file of Array.from(files)) {
+        const url = await uploadOne(file);
+        if (!url) continue;
+        const view = editor.view;
+        const node = view.state.schema.nodes.image.create({
+          src: url,
+          alt: file.name,
+        });
+        const tr = view.state.tr.insert(pos, node);
+        view.dispatch(tr);
+        pos = pos + node.nodeSize;
+      }
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  // 최신 참조 유지
+  handleDropRef.current = (files, pos) => void uploadAndInsertAt(files, pos);
 
   return (
     <div className="rounded-md border bg-background">
@@ -113,6 +170,9 @@ export function RichTextEditor({
         uploading={uploading}
       />
       <EditorContent editor={editor} />
+      <p className="border-t bg-muted/30 px-3 py-1.5 text-[11px] text-muted-foreground">
+        팁: 이미지 파일을 본문 위로 드래그하면 그 위치에 여러 장이 한 줄로 들어갑니다.
+      </p>
       {uploadError ? (
         <p className="border-t bg-destructive/5 px-3 py-2 text-xs text-destructive">
           {uploadError}

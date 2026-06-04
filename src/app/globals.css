@@ -170,8 +170,9 @@
   @apply italic;
 }
 .post-content img {
-  @apply my-2 mr-2 inline-block max-w-full rounded-md align-top;
-  max-height: 16rem;
+  @apply my-1.5 mr-1.5 inline-block rounded-md align-top;
+  max-height: 10rem;
+  max-width: 100%;
   width: auto;
   height: auto;
 }
@@ -210,8 +211,9 @@
   @apply text-primary underline underline-offset-2;
 }
 .tiptap.ProseMirror img {
-  @apply my-2 mr-2 inline-block max-w-full rounded-md align-top;
-  max-height: 14rem;
+  @apply my-1.5 mr-1.5 inline-block rounded-md align-top;
+  max-height: 9rem;
+  max-width: 100%;
   width: auto;
   height: auto;
 }
