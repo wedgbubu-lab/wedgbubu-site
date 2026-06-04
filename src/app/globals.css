@@ -130,6 +130,12 @@
 }
 
 /* 게시물 본문(렌더) — Tailwind reset이 비워둔 기본 태그 스타일 보충. */
+.post-content {
+  white-space: pre-wrap;
+}
+.post-content p:empty {
+  min-height: 1.5em;
+}
 .post-content h2 {
   @apply mt-8 text-2xl font-bold;
 }
@@ -185,6 +191,10 @@
 /* 게시물 에디터(작성) — 같은 스타일을 ProseMirror 편집 영역에도 적용. */
 .tiptap.ProseMirror {
   @apply min-h-[240px] outline-none;
+  white-space: pre-wrap;
+}
+.tiptap.ProseMirror p:empty {
+  min-height: 1.5em;
 }
 .tiptap.ProseMirror p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
