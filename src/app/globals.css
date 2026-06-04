@@ -132,6 +132,10 @@
 /* 게시물 본문(렌더) — Tailwind reset이 비워둔 기본 태그 스타일 보충. */
 .post-content {
   white-space: pre-wrap;
+  max-height: 75vh;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  scrollbar-width: thin;
 }
 .post-content p:empty {
   min-height: 1.5em;
@@ -192,6 +196,9 @@
 .tiptap.ProseMirror {
   @apply min-h-[240px] outline-none;
   white-space: pre-wrap;
+  max-height: 60vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 .tiptap.ProseMirror p:empty {
   min-height: 1.5em;
