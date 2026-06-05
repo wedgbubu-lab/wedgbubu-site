@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { createClient } from "@/lib/supabase/server";
 import { getCategoryAccent } from "@/lib/posts/category-color";
 import { stripHtmlForPreview } from "@/lib/posts/sanitize";
@@ -32,16 +33,21 @@ const FILTERABLE: ReadonlySet<string> = new Set(
   TABS.map((t) => t.value).filter(Boolean),
 );
 
-type SearchParams = Promise<{ category?: string }>;
+type SearchParams = Promise<{ category?: string; q?: string }>;
+
+function escapeLikePattern(s: string) {
+  return s.replace(/[\\%_,()]/g, (m) => "\\" + m);
+}
 
 export default async function InvestmentsPage({
   searchParams,
 }: {
   searchParams: SearchParams;
 }) {
-  const { category: rawCategory } = await searchParams;
+  const { category: rawCategory, q: rawQ = "" } = await searchParams;
   const activeCategory =
     rawCategory && FILTERABLE.has(rawCategory) ? rawCategory : "";
+  const searchQuery = rawQ.trim().slice(0, 100);
 
   const supabase = await createClient();
 
@@ -70,6 +76,10 @@ export default async function InvestmentsPage({
   if (activeCategory) {
     query = query.eq("category", activeCategory);
   }
+  if (searchQuery) {
+    const pat = `%${escapeLikePattern(searchQuery)}%`;
+    query = query.or(`title.ilike.${pat},content.ilike.${pat}`);
+  }
 
   const { data: posts } = await query;
   const list = posts ?? [];
@@ -80,19 +90,50 @@ export default async function InvestmentsPage({
       <header className="mb-4 space-y-1">
         <h1 className="text-lg font-bold sm:text-2xl">웨지부부 구독방 정보</h1>
         <p className="text-xs text-muted-foreground">
-          {isAdmin
-            ? `어드민 — 미발행 포함 · 총 ${list.length}건`
-            : `최근 발행순 · 총 ${list.length}건`}
+          {searchQuery
+            ? `"${searchQuery}" 검색 결과 · ${list.length}건`
+            : isAdmin
+              ? `어드민 — 미발행 포함 · 총 ${list.length}건`
+              : `최근 발행순 · 총 ${list.length}건`}
         </p>
       </header>
 
-      <CategoryTabs active={activeCategory} />
+      <CategoryTabs active={activeCategory} query={searchQuery} />
+
+      <form className="mb-4 flex items-center gap-2">
+        <input type="hidden" name="category" value={activeCategory} />
+        <Input
+          name="q"
+          defaultValue={searchQuery}
+          placeholder="제목·본문 검색"
+          className="h-9 flex-1 text-sm"
+        />
+        <Button type="submit" size="sm" variant="outline">
+          검색
+        </Button>
+        {searchQuery ? (
+          <Link
+            href={
+              activeCategory
+                ? `/investments?category=${encodeURIComponent(activeCategory)}`
+                : "/investments"
+            }
+            className={cn(
+              buttonVariants({ variant: "ghost", size: "sm" }),
+              "text-muted-foreground",
+            )}
+          >
+            초기화
+          </Link>
+        ) : null}
+      </form>
 
       {list.length === 0 ? (
         <EmptyState
           isAdmin={isAdmin}
           hasFilter={Boolean(activeCategory)}
           activeCategory={activeCategory}
+          searchQuery={searchQuery}
         />
       ) : (
         <ul className="space-y-2">
@@ -153,14 +194,19 @@ export default async function InvestmentsPage({
   );
 }
 
-function CategoryTabs({ active }: { active: string }) {
+function CategoryTabs({ active, query }: { active: string; query: string }) {
+  const qPart = query ? `q=${encodeURIComponent(query)}` : "";
   return (
-    <nav className="mb-8 flex items-center gap-1 border-b">
+    <nav className="mb-4 flex items-center gap-1 border-b">
       {TABS.map((tab) => {
         const isActive = active === tab.value;
-        const href = tab.value
-          ? `/investments?category=${encodeURIComponent(tab.value)}`
-          : "/investments";
+        const params = [
+          tab.value ? `category=${encodeURIComponent(tab.value)}` : "",
+          qPart,
+        ]
+          .filter(Boolean)
+          .join("&");
+        const href = params ? `/investments?${params}` : "/investments";
         return (
           <Link
             key={tab.value || "all"}
@@ -185,11 +231,32 @@ function EmptyState({
   isAdmin,
   hasFilter,
   activeCategory,
+  searchQuery,
 }: {
   isAdmin: boolean;
   hasFilter: boolean;
   activeCategory: string;
+  searchQuery: string;
 }) {
+  if (searchQuery) {
+    const resetHref = activeCategory
+      ? `/investments?category=${encodeURIComponent(activeCategory)}`
+      : "/investments";
+    return (
+      <div className="flex flex-col items-center gap-4 rounded-md border border-dashed px-6 py-16 text-center">
+        <p className="text-muted-foreground">
+          "{searchQuery}"에 해당하는 게시물이 없습니다.
+        </p>
+        <Link
+          href={resetHref}
+          className={buttonVariants({ variant: "outline", size: "sm" })}
+        >
+          검색 초기화
+        </Link>
+      </div>
+    );
+  }
+
   if (hasFilter) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-md border border-dashed px-6 py-16 text-center">
