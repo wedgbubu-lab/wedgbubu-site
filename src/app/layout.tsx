@@ -12,11 +12,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Vercel 환경변수 우선순위:
+//   1) NEXT_PUBLIC_SITE_URL — 운영자가 명시한 도메인
+//   2) VERCEL_PROJECT_PRODUCTION_URL — 프로젝트의 production 도메인 (모든 배포에서 동일)
+//   3) VERCEL_URL — 현재 배포 URL (preview 등 일시적)
+// OG 이미지는 1·2가 안전. 3은 deployment-hash URL이 들어와 외부 크롤러 401.
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000");
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000");
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
