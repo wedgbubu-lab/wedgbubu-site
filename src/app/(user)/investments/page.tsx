@@ -98,15 +98,15 @@ export default async function InvestmentsPage({
         </p>
       </header>
 
-      <div className="mb-4 flex items-end justify-between gap-2 border-b">
+      <div className="mb-4 border-b sm:flex sm:items-end sm:justify-between sm:gap-2">
         <CategoryTabs active={activeCategory} query={searchQuery} />
-        <form className="flex items-center gap-1 pb-1.5">
+        <form className="flex items-center gap-1 py-2 sm:pb-1.5 sm:pt-0">
           <input type="hidden" name="category" value={activeCategory} />
           <Input
             name="q"
             defaultValue={searchQuery}
             placeholder="검색"
-            className="h-7 w-28 text-xs sm:w-44"
+            className="h-7 flex-1 text-xs sm:w-44 sm:flex-none"
           />
           {searchQuery ? (
             <Link
