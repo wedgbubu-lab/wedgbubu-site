@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -98,35 +98,31 @@ export default async function InvestmentsPage({
         </p>
       </header>
 
-      <CategoryTabs active={activeCategory} query={searchQuery} />
-
-      <form className="mb-4 flex items-center gap-2">
-        <input type="hidden" name="category" value={activeCategory} />
-        <Input
-          name="q"
-          defaultValue={searchQuery}
-          placeholder="제목·본문 검색"
-          className="h-9 flex-1 text-sm"
-        />
-        <Button type="submit" size="sm" variant="outline">
-          검색
-        </Button>
-        {searchQuery ? (
-          <Link
-            href={
-              activeCategory
-                ? `/investments?category=${encodeURIComponent(activeCategory)}`
-                : "/investments"
-            }
-            className={cn(
-              buttonVariants({ variant: "ghost", size: "sm" }),
-              "text-muted-foreground",
-            )}
-          >
-            초기화
-          </Link>
-        ) : null}
-      </form>
+      <div className="mb-4 flex items-end justify-between gap-2 border-b">
+        <CategoryTabs active={activeCategory} query={searchQuery} />
+        <form className="flex items-center gap-1 pb-1.5">
+          <input type="hidden" name="category" value={activeCategory} />
+          <Input
+            name="q"
+            defaultValue={searchQuery}
+            placeholder="검색"
+            className="h-7 w-28 text-xs sm:w-44"
+          />
+          {searchQuery ? (
+            <Link
+              href={
+                activeCategory
+                  ? `/investments?category=${encodeURIComponent(activeCategory)}`
+                  : "/investments"
+              }
+              className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+              aria-label="검색 초기화"
+            >
+              ✕
+            </Link>
+          ) : null}
+        </form>
+      </div>
 
       {list.length === 0 ? (
         <EmptyState
@@ -197,7 +193,7 @@ export default async function InvestmentsPage({
 function CategoryTabs({ active, query }: { active: string; query: string }) {
   const qPart = query ? `q=${encodeURIComponent(query)}` : "";
   return (
-    <nav className="mb-4 flex items-center gap-1 border-b">
+    <nav className="flex items-center gap-1">
       {TABS.map((tab) => {
         const isActive = active === tab.value;
         const params = [
