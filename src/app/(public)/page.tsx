@@ -32,12 +32,6 @@ export default function LandingPage() {
       </div>
       <div className="flex flex-col gap-3 sm:flex-row">
         <Link
-          href="/login"
-          className={cn(buttonVariants({ size: "lg" }), "tracking-tight")}
-        >
-          로그인 / 가입
-        </Link>
-        <Link
           href="/investments"
           className={cn(
             buttonVariants({ size: "lg", variant: "outline" }),
@@ -45,6 +39,12 @@ export default function LandingPage() {
           )}
         >
           구독방 정보 바로가기
+        </Link>
+        <Link
+          href="/login"
+          className={cn(buttonVariants({ size: "lg" }), "tracking-tight")}
+        >
+          로그인 / 가입
         </Link>
       </div>
     </main>
